@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.products = exports.users = void 0;
+exports.searchProductsByName = exports.getAllProducts = exports.createProduct = exports.products = exports.getAllUsers = exports.createUser = exports.users = void 0;
 exports.users = [
     {
         id: '001',
@@ -16,6 +16,17 @@ exports.users = [
         createdAt: new Date().toISOString(),
     }
 ];
+function createUser(id, name, email, password) {
+    const createdAt = new Date().toISOString();
+    const newUser = { id, name, email, password, createdAt };
+    exports.users.push(newUser);
+    return "Cadastro realizado com sucesso";
+}
+exports.createUser = createUser;
+function getAllUsers() {
+    return exports.users;
+}
+exports.getAllUsers = getAllUsers;
 exports.products = [
     {
         id: '0034',
@@ -31,4 +42,23 @@ exports.products = [
         imageUrl: 'https..',
     }
 ];
+function createProduct(id, name, price, description, imageUrl) {
+    const newProduct = { id, name, price, description, imageUrl };
+    exports.products.push(newProduct);
+    return 'Produto criado com sucesso!';
+}
+exports.createProduct = createProduct;
+function getAllProducts() {
+    return exports.products;
+}
+exports.getAllProducts = getAllProducts;
+function searchProductsByName(name) {
+    const searchTerm = name.toLowerCase();
+    const matchingProducts = exports.products.filter((product) => {
+        const productName = product.name.toLowerCase();
+        return productName.includes(searchTerm);
+    });
+    return matchingProducts;
+}
+exports.searchProductsByName = searchProductsByName;
 //# sourceMappingURL=database.js.map
