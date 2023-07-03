@@ -1,10 +1,12 @@
-import { getAllProducts, getAllUsers, users } from "./database";
+import { getAllProducts, getAllUsers, users,products} from "./database";
 import { createUser } from "./database";
 import { createProduct } from "./database";
 import { searchProductsByName } from "./database";
 import express from 'express';
 import { Request, Response } from "express";
 import cors from 'cors';
+import { Tuser, Tproduct } from "./types";
+
 // console.log('O aplicativo foi iniciado,tudo certo.')
 // console.log(createUser('001','Ana Carolina', 'ana@gmail.com', '123443'))
 // console.log(getAllUsers())
@@ -18,4 +20,57 @@ app.use(express.json())
 app.use(cors())
 app.listen(3004, () => {
     console.log("Servidor rodando na porta 3004")
+})
+
+app.get('/ping', (req: Request, res: Response) => {
+    res.send('Pong!')
+})
+// Get All Users 
+app.get('/users', (req: Request, res: Response) => {
+    res.status(200).send(users)
+})
+// Get All Products ou produto específico.
+app.get('/products', (req: Request, res: Response) => {
+    const name = req.query.name as string
+    if(name !== undefined){
+        const filteredProducts = products.filter(product => product.name.toLowerCase().includes(name.toLowerCase()));
+        res.status(200).send(filteredProducts)
+    }else{
+        res.status(200).send(products)
+    }    
+
+})
+//Create User
+app.post('/users',(req: Request, res: Response) => {
+       const id = req.body.id as string
+       const name =  req.body.name as string
+       const email =  req.body.email as string
+       const password = req.body.password as string
+       const createdAt = new Date().toISOString() as string
+       const newUser:Tuser = {
+        id,
+        name,
+        email,
+        password,
+        createdAt
+       }
+       users.push(newUser)
+       res.status(201).send('Usuário cadastrado com sucesso!')
+})
+//Create Product
+app.post('/products', (req: Request, res: Response) => {
+    const id = req.body.id as string
+    const name = req.body.name as string
+    const price = req.body.price as number
+    const description = req.body.description as string
+    const imageUrl = req.body.imageUrl as string
+    const newProduct:Tproduct = {
+        id,
+        name,
+        price,
+        description,
+        imageUrl
+    }   
+    products.push(newProduct)
+    res.status(201).send('Produto cadastrado com sucesso!')
 })
