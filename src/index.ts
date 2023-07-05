@@ -95,7 +95,7 @@ app.put("/products/:id", (req: Request, res: Response) =>{
     const idToModify = req.params.id
     const newId = req.body.id as string | undefined
     const newName = req.body.name as string | undefined
-    const newPrice = req.body.price as number 
+    const newPrice = req.body.price as number | undefined
     const newDescription = req.body.description as string | undefined
     const newImageUrl = req.body.imageUrl as string | undefined
 
@@ -103,9 +103,10 @@ app.put("/products/:id", (req: Request, res: Response) =>{
     if (product){
         product.id = newId || product.id
         product.name = newName || product.name
-        product.price = isNaN(newPrice) ? product.price : newPrice
+        product.price = newPrice || product.price
         product.description = newDescription || product.description
         product.imageUrl = newImageUrl || product.imageUrl
+        product.price = isNaN(Number(newPrice))? product.price : newPrice as number
     }
     res.status(200).send("Produto atualizado com sucesso!")
 })
