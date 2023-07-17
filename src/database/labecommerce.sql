@@ -7,13 +7,12 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     created_at TEXT NOT NULL
 );
+INSERT INTO users(id, name, email, password, created_at)
+    VALUES
+    ("a001","Ana Carolina",'ana@email.com','123abc',datetime('now')),
+    ("a002","Emily",'emily@email.com','a23df5',datetime('now')),
+    ("a003","Maristela",'maristela@email.com','gte54g',datetime('now'));
 SELECT * FROM users;
-INSERT INTO users(id, name, email, password, created_at)
-    VALUES("a001","Ana Carolina",'ana@email.com','123abc',datetime('now'));
-INSERT INTO users(id, name, email, password, created_at)
-    VALUES("a002","Emily",'emily@email.com','a23df5',datetime('now'));
-INSERT INTO users(id, name, email, password, created_at)
-    VALUES("a003","Maristela",'maristela@email.com','gte54g',datetime('now'));
 
 CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
@@ -23,17 +22,14 @@ CREATE TABLE products (
     image_URL TEXT NOT NULL
 );
 
+INSERT INTO products (id, name, price, description, image_url)
+    VALUES
+    ('prod001','Chocolate amargo', 8.5,"Chocolate 70% de cacau","https..."),
+    ('prod002','Bala de café', 0.25,"Bala de café","httpsdfd..."),
+    ('prod003','Iogurte', 2.95,"Iogurte de laranja e cenoura","http..."),
+    ('prod004','Atum', 6.99,"Atum conservado em água","http..."),
+    ('prod005','Brioche', 3.95,"Brioche recheado com Nutella","httpfds...");
 SELECT * FROM products;
-INSERT INTO products (id, name, price, description, image_url)
-    VALUES('prod001','Chocolate amargo', 8.5,"Chocolate 70% de cacau","https...");
-INSERT INTO products (id, name, price, description, image_url)
-    VALUES('prod002','Bala de café', 0.25,"Bala de café","httpsdfd...");
-INSERT INTO products (id, name, price, description, image_url)
-    VALUES('prod003','Iogurte', 2.95,"Iogurte de laranja e cenoura","http...");
-INSERT INTO products (id, name, price, description, image_url)
-    VALUES('prod004','Atum', 6.99,"Atum conservado em água","http...");
-INSERT INTO products (id, name, price, description, image_url)
-    VALUES('prod005','Brioche', 3.95,"Brioche recheado com Nutella","httpfds...");
 
 ---Get All Users
 SELECT * FROM users;
@@ -47,7 +43,7 @@ WHERE name like '%Atum%' ;
 
 --Create User
 INSERT INTO users (id, name, email, password, created_at)
-VALUES("a0099","Maria Clara","mar_clara@gmail.com","434f5tg",datetime('now'));
+VALUES("a004","Maria Clara","mar_claraa@gmail.com","434f5tg",datetime('now'));
 
 --Create Product
 INSERT INTO products (id, name, price, description, image_url)
@@ -55,7 +51,7 @@ VALUES ("prod007","Mouse sem fio", 50.00 ,"Mouse sem fio ultra power","httpdfdsf
 
 --Delete User by id
 DELETE FROM users
-WHERE id = "a001";
+WHERE id = "a0099";
 
 --Delete Product by id
 DELETE FROM products
@@ -82,7 +78,6 @@ SET name = 'Maristela Paula',
     email = 'maristelac@gmail.com',
     password = '123456',
     created_at = datetime('now')
-
 where id  = 'a003';
 
  select * from users;
@@ -98,18 +93,20 @@ CREATE TABLE purchases (
         total_price REAL NOT NULL,
         created_at TEXT NOT NULL,
         FOREIGN KEY (buyer) REFERENCES users(id)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE
     );
 
+DROP TABLE purchases;
 SELECT * FROM purchases;
 
 --a chave estrangeira (FK) será a coluna buyer e irá referenciar a coluna id da tabela users
 
 INSERT INTO purchases (id, buyer, total_price, created_at)
-    VALUES('p001','a002',500,datetime('now'));
-
-INSERT INTO purchases (id, buyer, total_price, created_at)
-    VALUES('p002','a003',345,datetime('now'));
-
+    VALUES
+    ('pur001','a002',0,datetime('now')),
+    ('pur003','a004',0,datetime('now')),
+    ('pur002','a003',0,datetime('now'));
 UPDATE purchases
 SET total_price = 400
 where id  = 'p001';
@@ -126,3 +123,30 @@ purchases.created_at
 FROM users
 INNER JOIN purchases
 ON purchases.buyer = users.id;
+ 
+
+CREATE TABLE purchases_products (
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quatity INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+    FOREIGN KEY (purchase_id) REFERENCES purchases(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+INSERT INTO purchases_products
+    VALUES
+    ('p001','prod007',1),
+    ('p003','prod005',4),
+    ('p002','prod004',2);
+
+--Consulta com junção INNER JOIN
+
+SELECT * from purchases_products 
+INNER JOIN products
+ON purchases_products.product_id = products.id
+INNER JOIN purchases
+ON purchases_products.purchase_id = purchases.id;
