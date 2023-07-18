@@ -150,32 +150,17 @@ app.post('/products', async (req: Request, res: Response) => {
     }
 });
 
-// // Rota para criar um novo pedido
-// app.post("/purchases", async (req: Request, res: Response) => {
-//   try {
-//     // Verifica se todas as propriedades esperadas existem no corpo da requisição
-//     if (
-//       typeof req.body.id !== "string" ||
-//       typeof req.body.buyer !== "string" ||
-//       typeof req.body.totalPrice !== "number"
-//     ) {
-//       throw new Error("Dados incompletos do produto");
-//     }
-
-//     // Extraindo as propriedades do corpo da requisição
-//     const id = req.body.id as string;
-//     cons
-
-//Delete User by ID
-app.delete("/users/:id", (req: Request, res: Response) => {
+//Delete User by ID (Feito com query builder)
+app.delete("/users/:id", async (req: Request, res: Response) => {
     try {
         const idToDelete = req.params.id
-        const accountIndex = users.findIndex((user) => user.id === idToDelete)
-        if (accountIndex < 0) {
-            res.status(400)
-            throw new Error('Id inválida.')
+        const [userToDelete] = await db("users").where({id: idToDelete})
+
+        if (userToDelete) {
+            await db.del().from("users").where({id: idToDelete})
         } else {
-            users.splice(accountIndex, 1)
+            res.status(404)
+            throw new Error('Id inválida.')
         }
         res.status(200).send("User apagado com sucesso!")
     } catch (error: any) {
@@ -186,16 +171,17 @@ app.delete("/users/:id", (req: Request, res: Response) => {
         res.send(error.message)
     }
 })
-//Delete Product by ID
-app.delete("/products/:id", (req: Request, res: Response) => {
+//Delete Product by ID - (Feito com query builder)
+app.delete("/products/:id", async (req: Request, res: Response) => {
     try {
         const idToDelete = req.params.id
-        const productIndex = products.findIndex((product) => product.id === idToDelete)
-        if (productIndex < 0) {
-            res.status(400)
-            throw new Error('Para deletar algum produto, a ID precisa ser válida!')
+        const [productToDelete] = await db("products").where({id: idToDelete})
+        
+        if (productToDelete) {
+            await db.del().from("products").where({id:idToDelete})
         } else {
-            products.splice(productIndex, 1)
+            res.status(404)
+            throw new Error('Para deletar algum produto, a ID precisa ser válida!')
         }
         res.status(200).send("Produto deletado com sucesso!")
     } catch (error: any) {
@@ -207,7 +193,7 @@ app.delete("/products/:id", (req: Request, res: Response) => {
     }
 })
 
-//Edit Product by ID
+//Edit Product by ID 
 app.put("/products/:id", async (req: Request, res: Response) => {
     try {
         const idToModify = req.params.id
@@ -249,27 +235,36 @@ app.put("/products/:id", async (req: Request, res: Response) => {
     }
 })
 
-// Delete Purchase by ID TUDO ERRADO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+// Delete Purchase by ID (Feito com query builder)
 app.delete("/purchases/:id", async (req: Request, res: Response) => {
     try {
-        const purchaseToDelete = req.params.id
-        if(purchaseToDelete){
-            await db.raw(`
-            DELETE FROM purchases
-            WHERE id = "${purchaseToDelete}";
-            `)
+        const idToDelete = req.params.id
+        //procurar o id pra deletar 
+
+        const [purToDelete] = await db("purchases").where({id: idToDelete})
+
+        if(purToDelete){
+
+            await db.del().from("purchases").where({id: idToDelete})
+
         }else{
-            res.status(400)
+            res.status(404)
             throw new Error('Para deletar alguma compra, a ID precisa ser válida!')
         }
         res.status(200).send("Compra deletada com sucesso!")
     } catch (error: any) {
-        if (res.statusCode === 200) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
             res.status(500)
         }
-        console.log(error)
-        res.send(error.message)
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
 })
+
+// falta create purchase
