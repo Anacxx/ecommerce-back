@@ -80,26 +80,18 @@ SET name = 'Maristela Paula',
     created_at = datetime('now')
 where id  = 'a003';
 
- select * from users;
-
-
---purchases é pedido, entao essa e´a tabela de pedidos
-
--- relaçao de 1/1 com FK
-
+--Tabala de pedidos
 CREATE TABLE purchases (
         id TEXT PRIMARY KEY UNIQUE NOT NULL,
         buyer TEXT NOT NULL,
         total_price REAL NOT NULL,
-        created_at TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
         FOREIGN KEY (buyer) REFERENCES users(id)
             ON UPDATE CASCADE
             ON DELETE CASCADE
     );
 
 DROP TABLE purchases;
-SELECT * FROM purchases;
-
 --a chave estrangeira (FK) será a coluna buyer e irá referenciar a coluna id da tabela users
 
 INSERT INTO purchases (id, buyer, total_price, created_at)
@@ -112,7 +104,6 @@ SET total_price = 400
 where id  = 'p001';
 
 -- junção de users com purchases
-
 SELECT
 purchases.id,
 purchases.buyer,
@@ -128,7 +119,7 @@ ON purchases.buyer = users.id;
 CREATE TABLE purchases_products (
     purchase_id TEXT NOT NULL,
     product_id TEXT NOT NULL,
-    quatity INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
@@ -136,16 +127,21 @@ CREATE TABLE purchases_products (
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
-
+drop table purchases_products;
 INSERT INTO purchases_products
     VALUES
-    ('p001','prod007',1),
-    ('p003','prod005',4),
-    ('p002','prod004',2);
+    ('pur001','prod007',2),
+    ('pur003','prod005',4),
+    ('pur002','prod004',2);
 
 --Consulta com junção INNER JOIN
 
-SELECT * from purchases_products 
+ select * from users;
+ select * from products;
+SELECT * FROM purchases;
+SELECT * FROM purchases_products;
+
+
 INNER JOIN products
 ON purchases_products.product_id = products.id
 INNER JOIN purchases
