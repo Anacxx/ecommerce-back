@@ -25,3 +25,7 @@ GET /purchases/:id: Obtém informações detalhadas sobre uma compra específica
 POST /purchases: Cria uma nova compra com os campos obrigatórios (id, buyer, products).
 
 DELETE /purchases/:id: Remove uma compra específica com base no ID fornecido.
+
+
+Documentação 
+https://documenter.getpostman.com/view/27709298/2s93zFVyNr
