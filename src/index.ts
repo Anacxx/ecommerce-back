@@ -206,13 +206,12 @@ app.delete("/products/:id", async (req: Request, res: Response) => {
 app.put("/products/:id", async (req: Request, res: Response) => {
     try {
         const idToModify = req.params.id
-
+        
         const newId = req.body.id as string | undefined
         const newName = req.body.name as string | undefined
         const newPrice = req.body.price as number | undefined
         const newDescription = req.body.description as string | undefined
         const newImageUrl = req.body.imageUrl as string | undefined
-
 
         const [product] = await db.raw(`
         SELECT * FROM products
