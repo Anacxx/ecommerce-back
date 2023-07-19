@@ -276,7 +276,7 @@ app.delete("/purchases/:id", async (req: Request, res: Response) => {
     }
 })
 
-// Create purchase
+// Create purchase (Com query builder)
 app.post("/purchases", async (req: Request, res: Response) => {
     try {
         const id = req.body.id
@@ -343,54 +343,7 @@ app.post("/purchases", async (req: Request, res: Response) => {
 })
 
 
-// Get Purchase By ID
-// app.get("/purchases/:id", async (req: Request, res: Response) => {
-//     try {
-//         const id = req.params.id;
-//         if (typeof id !== 'string') {
-//             res.status(400);
-//             throw new Error("Id precisa ser uma string");
-//         }
-
-//         const purchase = await db('purchases').where({ id });
-
-//         if (!purchase) {
-//             res.status(404);
-//             throw new Error("Compra não encontrada");
-//         }
-
-//         const products = await db('purchases_products')
-//             .where({ purchase_id: id })
-//             .join('products', 'purchases_products.product_id', '=', 'products.id')
-//             .select('products.*', 'purchases_products.quantity as quantity');
-//             const result = await db.raw(`
-//                 SELECT
-//                 purchases.id AS purchaseId,
-//                 purchases.buyer AS buyerId,
-//                 users.name AS bandId,
-//                 users.email AS bandName,
-//                 purchases.created_at
-//                 FROM purchases
-//                 INNER JOIN users
-//                 ON purchases.buyer = users.id;
-//           `)
-//         res.status(200).send({ ...purchase, products });
-
-//     } catch (error) {
-//         console.log(error);
-
-//         if (res.statusCode === 200) {
-//             res.status(500);
-//         }
-
-//         if (error instanceof Error) {
-//             res.send(error.message);
-//         } else {
-//             res.send("Erro inesperado");
-//         }
-//     }
-// });
-
+// Get Purchase By ID (Com query builder)
 
 app.get("/purchases/:id", async (req: Request, res: Response) => {
     try {
